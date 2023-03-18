@@ -25,15 +25,15 @@ struct DeterministicTarOpt {
     #[structopt(short, long, default_value = "-")]
     output_tar: String,
 
-    /// SHA512 hashes of included files will be written to this file, use "-" for stdout
+    /// optionally, you can get the list of SHA512 hashes of included files. It will be written to the filename or you can use "-" for stdout.
     #[structopt(long)]
     output_hash: Option<String>,
 
-    /// (optional) directory name with which it will be required
+    /// (optional) name if you want to rename base directory or (in case of single-file tar) the main file
     #[structopt(short, long)]
     main_dir_name: Option<String>,
 
-    /// list of regular expressions. If the regular expression matches the file or directory name (without subdirs), then the file or directory (including directory) will not be included into the archive.
+    /// list of regular expressions. If the regular expression matches the file or directory basename, then this file or directory (including potential subdirectories and files) will not be included into the archive.
     #[structopt(short, long, parse(try_from_str = parse_regex))]
     ignored_names: Vec<Regex>,
 
@@ -41,11 +41,11 @@ struct DeterministicTarOpt {
     #[structopt(short, long)]
     empty_dirs_ignored: bool,
 
-    /// program should stop if it encounters an symlink. The default behaviour is to replace all symlinks with the "actual" content of the files/dirs behind the symlinks. Please note that this program will never put actual symlinks into the directories, it will always replace it with the actual file!
+    /// program should stop if it encounters an symlink. The default behaviour is to replace all symlinks with the "actual" content of the files/dirs behind the symlinks. Please note that this program will never put actual symlinks into the tar file, it will always duplicate the content of the actual file where the symlink points to!
     #[structopt(short, long)]
     symlinks_should_abort: bool,
 
-    /// ignore files starting with ".", this is equivalent to -i '^[.].*'
+    /// ignore files and directories where the basename starts with a dot. This is equivalent to -i '^[.].*'
     #[structopt(short, long)]
     dot_files_excluded: bool,
 }
